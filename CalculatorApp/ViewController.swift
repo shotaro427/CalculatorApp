@@ -28,9 +28,21 @@ class ViewController: UIViewController {
     /// ラベルを編集できるかどうか
     var editLabel: Bool = true
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    // クリアする関数
+    func allClear() {
+        // クリアする
+        resultCalculate.text = ""
+        result = 0
+        previousNumber = 0
+        numberOnScreen = 0
+        operation = 0
+        inValue = false
+        editLabel = true
+        performingMath = false
     }
     
     // 0~9のボタン
@@ -48,26 +60,30 @@ class ViewController: UIViewController {
         inValue = true
     }
     
-    // +,-,÷,×のボタン
+    // +,-,÷,×,=,Cのボタン
     @IBAction func actions(_ sender: UIButton) {
         // ラベルを書き換える
         editLabel = true
-        
-        // 値が入っていたときの処理
-        if inValue {
             if sender.tag == 10 { // Cが押されたとき
                 // クリアする
-                resultCalculate.text = ""
-                result = 0
-                previousNumber = 0
-                numberOnScreen = 0
-                operation = 0
-                inValue = false
-            } else if sender.tag == 15  {// = が押された時
+                allClear()
+//                resultCalculate.text = ""
+//                result = 0
+//                previousNumber = 0
+//                numberOnScreen = 0
+//                operation = 0
+//                inValue = false
+//                editLabel = true
+//                performingMath = false
+            } else if inValue && sender.tag == 15  {// = が押された時
                 // 演算子を判定して、演算を実行
                 switch operation {
                 case 11:
-                    result = previousNumber / numberOnScreen
+                    if numberOnScreen != 0 {
+                        result = previousNumber / numberOnScreen
+                    } else {
+                        result = Double.infinity
+                    }
                 case 12:
                     result = previousNumber * numberOnScreen
                 case 13:
@@ -80,20 +96,26 @@ class ViewController: UIViewController {
                 // 小数点で値を分離
                 let shosu: [String] = String(result).components(separatedBy: ".")
                 
-                // 結果が0出ないとき
-                if result != 0 {
-                    // 小数点以下が0であるなら
-                    if shosu[1] == "0" {
-                        resultCalculate.text = String(Int(result))
-                    } else { // 小数点以下が0でない
-                        resultCalculate.text = String(result)
-                    }
-                    // 数値を足せないようにする
-                    editLabel = false
+                if result.isInfinite {
+                    resultCalculate.text = "エラー"
+                    allClear()
+                } else if shosu[1] == "0" {
+                     // 小数点以下が0であるなら
+                    resultCalculate.text = String(Int(result))
+                    inValue = true
+                }else { // 小数点以下が0でない
+                    resultCalculate.text = String(result)
+                    inValue = true
                 }
+                
+                // 数値を足せないようにする
+                editLabel = false
             } else { // +,-,×,÷のいずれかが押されたとき
                 // 画面に表示されている数字を変数に代入
-                previousNumber = Double(resultCalculate.text!)!
+                if inValue {
+                    previousNumber = Double(resultCalculate.text!)!
+                    print(previousNumber)
+                }
                 switch sender.tag {
                 case 11:
                     resultCalculate.text = "÷"
@@ -106,11 +128,11 @@ class ViewController: UIViewController {
                 default:
                     break
                 }
+                inValue = false
                 // 演算子を記憶
                 operation = sender.tag
                 // 計算していい
                 performingMath = true
-            }
         }
     }
 }
