@@ -13,19 +13,19 @@ class ViewController: UIViewController {
     // 計算結果を表示するラベル
     @IBOutlet weak var resultCalculate: UILabel!
     
-    // 画面上の数字
+    /// 画面上の数字
     var numberOnScreen: Double = 0
-    // 前回表示されていた数字
+    /// 前回表示されていた数字
     var previousNumber: Double = 0
-    // 四則演算の演算子
+    /// 四則演算の演算子
     var operation: Int = 0
-    // 計算結果を入れる
+    /// 計算結果を入れる
     var result: Double = 0
-    // 数値が入力されたかどうかの判断
+    /// 数値が入力されたかどうかの判断
     var inValue: Bool = false
-    // 計算してもいいかどうかの判断
+    /// 計算してもいいかどうかの判断
     var performingMath: Bool = false
-    // ラベルを編集できるかどうか
+    /// ラベルを編集できるかどうか
     var editLabel: Bool = true
     
     
