@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     /// 前回表示されていた数字
     var previousNumber: Double = 0
     /// 四則演算の演算子
-    var operation: Int = 0
+    var operation: String = ""
     /// 計算結果を入れる
     var result: Double = 0
     /// 数値が入力されたかどうかの判断
@@ -32,14 +32,14 @@ class ViewController: UIViewController {
         super.viewDidLoad()
     }
     
-    // クリアする関数
+    /// クリアする関数
     func allClear() {
         // クリアする
         resultCalculate.text = ""
         result = 0
         previousNumber = 0
         numberOnScreen = 0
-        operation = 0
+        operation = ""
         inValue = false
         editLabel = true
         performingMath = false
@@ -47,6 +47,7 @@ class ViewController: UIViewController {
     
     // 0~9のボタン
     @IBAction func numbers(_ sender: UIButton) {
+        // 演算結果の上書き防止
         if editLabel {
             if performingMath {
                 resultCalculate.text = String(sender.tag)
@@ -62,75 +63,52 @@ class ViewController: UIViewController {
     
     // +,-,÷,×,=,Cのボタン
     @IBAction func actions(_ sender: UIButton) {
-        // ラベルを書き換える
+        // ラベルを書き換えOK
         editLabel = true
-            if sender.tag == 10 { // Cが押されたとき
+            if sender.currentTitle == "C" { // Cが押されたとき
                 // クリアする
                 allClear()
-//                resultCalculate.text = ""
-//                result = 0
-//                previousNumber = 0
-//                numberOnScreen = 0
-//                operation = 0
-//                inValue = false
-//                editLabel = true
-//                performingMath = false
-            } else if inValue && sender.tag == 15  {// = が押された時
+            } else if inValue && sender.currentTitle == "="  {// = が押された時
                 // 演算子を判定して、演算を実行
                 switch operation {
-                case 11:
-                    if numberOnScreen != 0 {
-                        result = previousNumber / numberOnScreen
-                    } else {
-                        result = Double.infinity
-                    }
-                case 12:
+                case "÷":
+                    result = previousNumber / numberOnScreen
+                case "×":
                     result = previousNumber * numberOnScreen
-                case 13:
+                case "+":
                     result = previousNumber + numberOnScreen
-                case 14:
+                case "-":
                     result = previousNumber - numberOnScreen
                 default:
                     break
                 }
                 // 小数点で値を分離
                 let shosu: [String] = String(result).components(separatedBy: ".")
-                
-                if result.isInfinite {
-                    resultCalculate.text = "エラー"
-                    allClear()
-                } else if shosu[1] == "0" {
-                     // 小数点以下が0であるなら
+
+                // 計算結果が無限ではない、かつ整数である時の処理
+                if !result.isInfinite && shosu[1] == "0" {
+                    // 小数点以下が0であるなら
                     resultCalculate.text = String(Int(result))
-                    inValue = true
-                }else { // 小数点以下が0でない
+                }else { // 小数点以下が0でない = 少数で表示する
                     resultCalculate.text = String(result)
-                    inValue = true
                 }
-                
+                // 数値が入っている
+                inValue = true
                 // 数値を足せないようにする
                 editLabel = false
             } else { // +,-,×,÷のいずれかが押されたとき
                 // 画面に表示されている数字を変数に代入
                 if inValue {
                     previousNumber = Double(resultCalculate.text!)!
-                    print(previousNumber)
                 }
-                switch sender.tag {
-                case 11:
-                    resultCalculate.text = "÷"
-                case 12:
-                    resultCalculate.text = "×"
-                case 13:
-                    resultCalculate.text = "+"
-                case 14:
-                    resultCalculate.text = "-"
-                default:
-                    break
+                // 「 = 」以外の演算子を表示
+                if sender.currentTitle != "=" {
+                    resultCalculate.text = sender.currentTitle
                 }
+                // 数値は入っていない
                 inValue = false
                 // 演算子を記憶
-                operation = sender.tag
+                operation = sender.currentTitle!
                 // 計算していい
                 performingMath = true
         }
