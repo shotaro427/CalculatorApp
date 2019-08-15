@@ -89,10 +89,11 @@ class ViewController: UIViewController {
                 if !result.isInfinite && shosus.last == "0" {
                     // 小数点以下が0であるなら
                     resultCalculate.text = String(Int(result))
-                }else { // 小数点以下が0でない = 少数で表示する
+                } else {
+                    // 小数点以下が0でない = 少数で表示する
                     resultCalculate.text = String(result)
                 }
-                    
+                
                 // 数値が入っている
                 inValue = true
                 // 数値を足せないようにする
