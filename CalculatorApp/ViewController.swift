@@ -83,15 +83,16 @@ class ViewController: UIViewController {
                     break
                 }
                 // 小数点で値を分離
-                let shosu: [String] = String(result).components(separatedBy: ".")
+                let shosus: [String] = String(result).components(separatedBy: ".")
 
                 // 計算結果が無限ではない、かつ整数である時の処理
-                if !result.isInfinite && shosu[1] == "0" {
+                if !result.isInfinite && shosus.last == "0" {
                     // 小数点以下が0であるなら
                     resultCalculate.text = String(Int(result))
                 }else { // 小数点以下が0でない = 少数で表示する
                     resultCalculate.text = String(result)
                 }
+                    
                 // 数値が入っている
                 inValue = true
                 // 数値を足せないようにする
